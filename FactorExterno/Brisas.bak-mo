@@ -1,0 +1,21 @@
+within Granja_Solar.FactorExterno;
+
+model Brisas
+  Modelica.Blocks.Sources.CombiTimeTable combiTimeTable1 annotation(
+    Placement(visible = true, transformation(origin = {-32, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.Constant const annotation(
+    Placement(visible = true, transformation(origin = {-32, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Math.Max max1 annotation(
+    Placement(visible = true, transformation(origin = {34, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealOutput y annotation(
+    Placement(visible = true, transformation(origin = {106, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {106, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+equation
+  connect(max1.y, y) annotation(
+    Line(points = {{46, 0}, {96, 0}, {96, 0}, {106, 0}, {106, 0}}, color = {0, 0, 127}));
+  connect(const.y, max1.u2) annotation(
+    Line(points = {{-20, -30}, {20, -30}, {20, -6}, {22, -6}, {22, -6}}, color = {0, 0, 127}));
+  connect(combiTimeTable1.y, max1.u1) annotation(
+    Line(points = {{-20, 30}, {20, 30}, {20, 6}, {22, 6}}, color = {0, 0, 127}));
+
+annotation(
+    Diagram);end Brisas;

@@ -7,7 +7,7 @@ model Irradiacion
   import Granja_Solar.FactorExterno.Funciones.Dia;
   parameter Integer DiaInicio(final min = 1, final max = 31) = 4;
   parameter Integer MesInicio(final min = 1, final max = 12) = 8;
-  parameter Integer InicioA = 2016;
+  parameter Integer InicioA = 2019;
   parameter Integer ZonaHoraria = 1;
   parameter Modelica.SIunits.Angle longitud = -75.4635917;
   parameter Modelica.SIunits.Angle latitud = 10.369055399999999;

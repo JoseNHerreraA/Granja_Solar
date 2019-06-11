@@ -38,7 +38,6 @@ model Irradiacion
   Modelica.Blocks.Interfaces.RealOutput irradiacion annotation (
     Placement(transformation(extent={{100,-10},{120,10}})));
 algorithm
-  // Calculate ratio of day w.r.t. total number of days of a year as equivalent angle
   when sample(24 * 3600, 24 * 3600) then
     Dia_A := mod(pre(Dia_A), pre(Dias_A)) + 1;
   end when;
@@ -47,11 +46,6 @@ algorithm
     A := pre(A) + 1;
     Dias_A := Dia(31, 12, A);
   end when;
-  // One full year is reached
-  // Reset start day of year
-  // Increment year
-  // Determined actual number of total days of year
-
 equation
 Jprime = Dia_A / Dias_A * 2 * pi;
   delta_J = Radianes(0.3948 - 23.2559 * cos(Jprime + Radianes(9.1)) - 0.3915 * cos(2 * Jprime + Radianes(5.4)) - 0.1764 * cos(3 * Jprime + Radianes(26)));

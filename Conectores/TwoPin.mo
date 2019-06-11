@@ -12,4 +12,5 @@ equation
   0 = pinPos1.i + pinNeg1.i;
   i = pinPos1.i;
 annotation(
-    Icon(graphics = {Rectangle(origin = {0, -1}, lineColor = {255, 255, 255}, fillColor = {255, 255, 255}, lineThickness = 0, extent = {{-80, 9}, {80, -9}})}, coordinateSystem(initialScale = 0.1)));end TwoPin;
+    Icon(graphics = {Rectangle(origin = {0, -1}, lineColor = {255, 255, 255}, fillColor = {255, 255, 255}, lineThickness = 0, extent = {{-80, 9}, {80, -9}})}, coordinateSystem(initialScale = 0.1)));
+end TwoPin;

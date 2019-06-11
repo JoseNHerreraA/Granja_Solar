@@ -3,26 +3,26 @@ within Granja_Solar.Componentes;
 model CeldaPV
   extends Granja_Solar.Conectores.TwoPin;
   extends Modelica.Thermal.HeatTransfer.Interfaces.PartialConditionalHeatPort(T = 298.15);
-  parameter Boolean IrradiacionConstante = true "If false, signal input is used" annotation (
+  parameter Boolean IrradiacionConstante = true  annotation (
     Evaluate = true,
     HideResult = true,
     choices(checkBox = true));
-  parameter Modelica.SIunits.Irradiance Irradiacion = 1000 "Constant solar irradiance, if useConstantIrradiance = true" annotation (
+  parameter Modelica.SIunits.Irradiance Irradiacion = 1000  annotation (
     Dialog(enable = useConstantIrradiance));
-  parameter Granja_Solar.Componentes.Datos Datos_Modelo "Module parameters" annotation (
+  parameter Granja_Solar.Componentes.Datos Datos_Modelo annotation (
     choicesAllMatching = true,
     Placement(transformation(extent = {{60, 60}, {80, 80}})));
-  Modelica.SIunits.Current iGenerada = -i "Negative current (generating)";
-  Modelica.SIunits.Power Potencia = v * i "Power";
-  Modelica.SIunits.Power PotenciaGenerada = v * iGenerada "Negative power consumption (generating)";
-  Modelica.Blocks.Interfaces.RealInput IrradiacionVariable(unit = "W/m2") if not IrradiacionConstante "Solar irradiance" annotation (
+  Modelica.SIunits.Current iGenerada = -i;
+  Modelica.SIunits.Power Potencia = v * i;
+  Modelica.SIunits.Power PotenciaGenerada = v * iGenerada;
+  Modelica.Blocks.Interfaces.RealInput IrradiacionVariable(unit = "W/m2") if not IrradiacionConstante annotation (
     Placement(visible = true,transformation( origin = {0, 120},extent = {{20, -20}, {-20, 20}}, rotation = 90), iconTransformation( origin = {0, 80},extent = {{20, -20}, {-20, 20}}, rotation = 90)));
   Modelica.Blocks.Sources.Constant constante(final k = Irradiacion) if IrradiacionConstante annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-30, 80})));
   Diodo diodo1 annotation(
     Placement(visible = true, transformation(origin = {2, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 protected
-  Modelica.Blocks.Interfaces.RealInput irradiacion(unit = "W/m2") "Solar irradiance (either constant or signal input)" annotation (
+  Modelica.Blocks.Interfaces.RealInput irradiacion(unit = "W/m2") annotation (
     Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {0, 70})));
   Granja_Solar.Componentes.Diodo diode(
     final useHeatPort = useHeatPort, 
@@ -48,9 +48,9 @@ protected
     final alphaRef=Datos_Modelo.alphaIsc,
     final IRef=IphRef) annotation(
     Placement(visible = true, transformation(origin = {1, -1}, extent = {{-21, -21}, {21, 21}}, rotation = 180)));
-final parameter Real m(start = 2, fixed = false) "Ideality factor of diode";
-final parameter Modelica.SIunits.Current IsdRef(start = 1E-4, fixed = false) "Reference saturation current of cell";
-final parameter Modelica.SIunits.Current IphRef = Datos_Modelo.IscRef "Reference photo current of cell";
+final parameter Real m(start = 2, fixed = false);
+final parameter Modelica.SIunits.Current IsdRef(start = 1E-4, fixed = false);
+final parameter Modelica.SIunits.Current IphRef = Datos_Modelo.IscRef;
 equation
   connect(fuente_Corriente1.irradiance, irradiacion) annotation(
     Line(points = {{2, -16}, {90, -16}, {90, 44}, {0, 44}, {0, 70}, {0, 70}}, color = {0, 0, 127}));

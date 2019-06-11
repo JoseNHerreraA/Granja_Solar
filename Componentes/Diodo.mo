@@ -3,50 +3,44 @@ within Granja_Solar.Componentes;
 model Diodo
   extends Granja_Solar.Conectores.TwoPin(v(start=0));
   extends Modelica.Electrical.Analog.Interfaces.ConditionalHeatPort(T = 298.15);
-  constant Modelica.SIunits.Charge Q = 1.6021766208E-19 "Elementary charge of electron";
-  parameter Real m = 1 "Ideality factor of diode";
-  parameter Modelica.SIunits.Resistance R = 1E8 "Parallel ohmic resistance";
-  parameter Modelica.SIunits.Temperature TRef = 298.15 "Reference temperature" annotation (
+  constant Modelica.SIunits.Charge Q = 1.6021766208E-19;
+  parameter Real m = 1;
+  parameter Modelica.SIunits.Resistance R = 1E8 ;
+  parameter Modelica.SIunits.Temperature TRef = 298.15  annotation (
     Dialog(group = "Reference data"));
-  parameter Modelica.SIunits.Voltage VRef(min = Modelica.Constants.small) = 0.6292 "Reference voltage > 0 at TRef" annotation (
+  parameter Modelica.SIunits.Voltage VRef(min = Modelica.Constants.small) = 0.6292 annotation (
     Dialog(group = "Reference data"));
-  parameter Modelica.SIunits.Current IRef(min = Modelica.Constants.small) = 8.540 "Reference current > 0 at TRef" annotation (
+  parameter Modelica.SIunits.Current IRef(min = Modelica.Constants.small) = 8.540 annotation (
     Dialog(group = "Reference data"));
-  parameter Modelica.SIunits.LinearTemperatureCoefficient alphaI = +0.00053 "Temperature coefficient of reference current at TRef" annotation (
+  parameter Modelica.SIunits.LinearTemperatureCoefficient alphaI = +0.00053 annotation (
     Dialog(group = "Reference data"));
-  parameter Modelica.SIunits.LinearTemperatureCoefficient alphaV = -0.00340 "Temperature coefficient of reference voltage at TRef*" annotation (
+  parameter Modelica.SIunits.LinearTemperatureCoefficient alphaV = -0.00340  annotation (
     Dialog(group = "Reference data"));
-  Modelica.SIunits.Voltage Vt "Voltage equivalent of temperature (k*T/Q)";
-  Modelica.SIunits.Voltage VRefActual "Reference voltage w.r.t. actual temperature";
-  Modelica.SIunits.Current IRefActual "Reference current w.r.t. actual temperature";
-  Modelica.SIunits.Current Ids "Saturation current";
-  
-  
-  parameter Modelica.SIunits.Voltage Bv = 5.1 "Breakthrough voltage";
-  parameter Modelica.SIunits.Current Ibv = 0.7 "Breakthrough knee current";
-  parameter Real Nbv = 0.74 "Breakthrough emission coefficient";
-  parameter Integer ns = 1 "Number of series connected cells per module";
-  parameter Integer nsModule(final min = 1) = 1 "Number of series connected modules";
-  parameter Integer npModule(final min = 1) = 1 "Number of parallel connected modules";
-  final parameter Modelica.SIunits.Voltage VtRef = Modelica.Constants.k * TRef / Q "Reference voltage equivalent of temperature";
-  final parameter Modelica.SIunits.Voltage VBv = (-m * Nbv * log(IdsRef * Nbv / Ibv) * VtRef) - Bv "Voltage limit of approximation of breakthrough";
-  final parameter Modelica.SIunits.Current IdsRef = IRef / (exp(VRef / m / VtRef) - 1) "Reference saturation current";
-  final parameter Modelica.SIunits.Voltage VNegLin = (-VRef / m / VtRef * (Nbv * m * VtRef)) - Bv "Limit of linear range left of breakthrough";
-  Modelica.SIunits.Voltage VNeg "Limit of linear negative voltage range";
-  Modelica.SIunits.Voltage vCell = v / ns / nsModule "Cell voltage";
-  Modelica.SIunits.Voltage vModule = v / nsModule "Module voltage";
-  Modelica.SIunits.Current iModule = i / npModule "Module current";
+  Modelica.SIunits.Voltage Vt;
+  Modelica.SIunits.Voltage VRefActual;
+  Modelica.SIunits.Current IRefActual ;
+  Modelica.SIunits.Current Ids;
+  parameter Modelica.SIunits.Voltage Bv = 5.1 ;
+  parameter Modelica.SIunits.Current Ibv = 0.7;
+  parameter Real Nbv = 0.74;
+  parameter Integer ns = 1;
+  parameter Integer nsModule(final min = 1) = 1 ;
+  parameter Integer npModule(final min = 1) = 1 ;
+  final parameter Modelica.SIunits.Voltage VtRef = Modelica.Constants.k * TRef / Q ;
+  final parameter Modelica.SIunits.Voltage VBv = (-m * Nbv * log(IdsRef * Nbv / Ibv) * VtRef) - Bv ;
+  final parameter Modelica.SIunits.Current IdsRef = IRef / (exp(VRef / m / VtRef) - 1);
+  final parameter Modelica.SIunits.Voltage VNegLin = (-VRef / m / VtRef * (Nbv * m * VtRef)) - Bv ;
+  Modelica.SIunits.Voltage VNeg;
+  Modelica.SIunits.Voltage vCell = v / ns / nsModule ;
+  Modelica.SIunits.Voltage vModule = v / nsModule ;
+  Modelica.SIunits.Current iModule = i / npModule ;
 equation
-// Temperature dependent voltage
   Vt = Modelica.Constants.k * T_heatPort / Q;
-  // Re-calculate reference voltage and current with respect to reference temperature
   VRefActual = VRef * (1 + alphaV * (T_heatPort - TRef));
   IRefActual = IRef * (1 + alphaI * (T_heatPort - TRef));
-  // Actual temperature dependent saturation current is determined from reference voltage and current
   Ids = IRefActual / (exp(VRefActual / m / Vt) - 1);
   LossPower = v * i;
 VNeg = m * Vt * log(Vt / VtRef);
-  // Current approximation
   i / npModule = smooth(1, if v / ns / nsModule > VNeg then Ids * (exp(v / ns / nsModule / m / Vt) - 1) + v / ns / nsModule / R elseif v / ns / nsModule > VBv then Ids * v / ns / nsModule / m / VtRef + v / ns / nsModule / R
    elseif v / ns / nsModule > VNegLin then (-Ibv * exp(-(v / ns / nsModule + Bv) / (Nbv * m * Vt))) + Ids * VBv / m / VtRef + v / ns / nsModule / R else Ids * v / ns / nsModule / m / Vt - Ibv * exp(VRef / m / VtRef) * (1 - (v / ns / nsModule + Bv) / (Nbv * m * Vt) - VRef / m / VtRef) + v / ns / nsModule / R);
   annotation (
